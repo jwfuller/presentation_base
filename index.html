@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
@@ -9,18 +10,19 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="css/reveal.css">
   <link rel="stylesheet" href="css/theme/night.css" id="theme">
   <!-- Code syntax highlighting -->
   <link rel="stylesheet" href="lib/css/zenburn.css">
   <!-- Printing and PDF exports -->
   <script>
-  var link = document.createElement( 'link' );
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-  document.getElementsByTagName( 'head' )[0].appendChild( link );
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
   </script>
   <!--[if lt IE 9]>
   <script src="lib/js/html5shiv.js"></script>
@@ -34,42 +36,21 @@
 
       <section>
         <h1>Intro to the ELK Cluster</h1>
-        <h3>A bit better than <code>tail</code></h3>
-        <p>
-          <small>James Fuller, DevOps for Web Express<br />
-            Office of Strategic Relations
-          </small>
+        <p><small>James Fuller<br />Office of Strategic Relations</small></p>
+        <p><small>Follow along at: <strong><a
+                href="https://cdn.statically.io/gh/jwfuller/tin_foil_hats/master/index.html">https://cdn.statically.io/gh/jwfuller/tin_foil_hats/master/index.html</a></strong></small>
         </p>
-        <p><small>Follow along at: <strong><a href="http://rawgit.com/jwfuller/elk_tech_talk/master/index.html#/">http://rawgit.com/jwfuller/elk_tech_talk/master/index.html#/</a></strong></small></p>
-      </section>
-
-      <section>
-        <h2>Afternoon!</h2>
-        <ul>
-          <li>I work on the Web Express team.</li>
-          <li>We run a SaaS that currently has ~1000 instances of Drupal (a CMS written in PHP).</li>
-        </ul>
-        <aside class="notes">
-
-        </aside>
       </section>
 
       <section>
         <h2>Overview</h2>
         <ul>
-          <li>Our logging problem</li>
-          <li>Tour of the ELK stack</li>
-          <li>Easy to deploy - examples of some basic configuration</li>
-          <li>Easy to use - answering real questions</li>
+          <li></li>
         </ul>
       </section>
 
       <!-- Start vertical 1 -->
       <section>
-        <section>
-          <h2>Web Express and it's logging problem</h2>
-        </section>
-
         <section>
           <h2>Everything has data</h2>
           <aside class="notes">
@@ -80,585 +61,40 @@
           <h2>Log files</h2>
           <ul>
             <li class="fragment">Drupal application</li>
-            <li class="fragment">Drupal authentication (for ITSO compliance)</li>
-            <li class="fragment">Apache access</li>
-            <li class="fragment">Apache error</li>
-            <li class="fragment">MySQL slow transaction</li>
-            <li class="fragment">Python application</li>
-            <li class="fragment">Apache for python application</li>
-            <li class="fragment">MongoDB for python application</li>
-            <li class="fragment">Varnish access</li>
-            <li class="fragment">Error logging from 3rd party hosting</li>
-            <li class="fragment">Logs from CI server</li>
           </ul>
           <aside class="notes">
-            Apache logs are times 2 because of SSL. This is 100% sustainable logging. I guarantee we can make more, as many as you want!
-          </aside>
-        </section>
-
-        <section>
-          <h2>Metrics</h2>
-          <ul>
-            <li class="fragment">DevOps applications</li>
-            <li class="fragment">CI server</li>
-            <li class="fragment">Sysadmin-y stuff like CPU and memory utilzation</li>
-          </ul>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>They are all over the place</h2>
-          <ul>
-            <li>Drupal and Apache logs come from 5 servers</li>
-            <li>Varnish logs from 4 servers</li>
-            <li>Databse logs from 2 servers</li>
-            <li class="fragment">The cluster has ~16 servers</li>
-            <li class="fragment">That is just in our Production cluster, we also have DEV and TEST enviroments</li>
-          </ul>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>No one cares unless something goes wrong</h2>
-          <p class="fragment">When something goes wrong, you need <code>grep</code>, <code>awk</code>, <code>|</code> and RegEx black magic to find what you are looking for</p>
-        </section>
-
-        <section>
-          <p><code>grep "Invalid user" /var/log/httpd/auth.log | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | uniq</code></p>
-          <aside class="notes">
-            Finds Unique IPs for users with a failed login.
+            Apache logs are times 2 because of SSL. This is 100% sustainable logging. I guarantee we can make more, as
+            many as you want!
           </aside>
         </section>
       </section>
       <!-- End vertical 1 -->
-      <!-- Start vertical 2 -->
-      <section>
-        <section>
-          <h2>Enter ELK</h2>
-          <img data-src="assets/cat_elk.jpeg" alt="Cat wearing antlers hat" />
-          <p><small><a href="http://www.lalocadelosgatos.com/wp-content/uploads/2012/10/gato-disfraz-ciervo.jpeg">http://www.lalocadelosgatos.com/wp-content/uploads/2012/10/gato-disfraz-ciervo.jpeg</a></small></p>
-          <aside class="notes">
-            They call it the 'Elastic stack' now, but I still like ELK.
-          </aside>
-        </section>
+    </div>
+  </div>
 
-        <section>
-          <figure style="float:left; width: 49%">
-            <img data-src="assets/logo-elasticsearch.png" alt="Elasticsearch logo"/>
-          </figure>
-          <figure style="float:right; width: 49%">
-            <img data-src="assets/logo-logstash.png" alt="logstash logo" />
-          </figure>
-          <figure style="float:left; width: 49%; clear: both">
-            <img data-src="assets/logo-kibana.png" alt="Kibana logo"/>
-          </figure>
-          <figure style="float:right; width: 49%">
-            <img data-src="assets/logo-beats.png" alt="Beats logo" />
-          </figure>
-          <aside class="notes">
-
-          </aside>
-        </section>
-
-        <section>
-          <h2>Gathering logs</h2>
-          <ul>
-            <li>Beats</li>
-            <li><a href="https://github.com/elastic/logstash-forwarder">Logstash-forwarder</a> (Deprecated)</li>
-            <li>Syslog and friends (<a href="http://www.rsyslog.com/output-to-elasticsearch-in-logstash-format-kibana-friendly/">rsyslog</a>, syslog-ng, etc.)</li>
-            <li>Lots of other options</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>Beats</h2>
-          <p>Lightweight shippers written in Golang that send data from edge machines to Logstash and Elasticsearch.</p>
-          <ul class="fragment">
-            <li>Filebeat</li>
-            <li>Metricbeat</li>
-            <li>Packetbeat</li>
-            <li>Winlogbeat</li>
-            <li>Heartbeat</li>
-            <li>And a bunch of <a href="https://www.elastic.co/guide/en/beats/libbeat/current/community-beats.html">community beats</a></li>
-          </ul>
-
-          <aside class="notes">
-            This is where I will be expanding our cluster next.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Beats</h2>
-          <ul>
-            <li>Has templates for some common use cases</li>
-            <li>Can handle basic parsing, like NCSA common log format</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>Broker</h2>
-          <p>You don't have to use a broker, but there are some benefits</p>
-          <ul class="fragment">
-            <li>Enhances performance of the indexer</li>
-            <li>Provides some resiliency if the indexer goes down.</li>
-
-          </ul>
-          <div class="fragment">
-            <p><a href="http://redis.io/">Redis</a> is commonly used as a broker.</p>
-            <p>Beats now fufills this need to some degree.</p>
-          </div>
-        </section>
-
-        <section>
-          <h2>Transform</h2>
-          <p>Logstash has three basic parts</p>
-          <ul class="fragment">
-            <li>Input - where is this coming from?
-              <ul>
-                <li>File, Beat, HTTP, etc.</li>
-              </ul>
-            </li>
-            <li class="fragment">Filter - break monolithic messages into data
-              <ul>
-                <li>Grok, date, geoip, mutate, etc.</li>
-              </ul>
-            </li>
-            <li class="fragment">Output - what should we do with the events after we chop?
-              <ul>
-                <li>Elasticsearch, a ton of messaging protocols, other databases</li>
-              </ul>
-            </li>
-          </ul>
-          <aside class="notes">
-            Now we get to the fun stuff! Also written in Java.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Store and index</h2>
-          <h3>Elasticsearch</h3>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>Elasticsearch</h2>
-          <ul>
-            <li>Distributed, multitenant-capable full-text search engine built on <a href="https://lucene.apache.org/">Apache Lucene</a></li>
-            <li>Provides a RESTful web interface and schema-free JSON documents</li>
-            <li class="fragment">Logstash creates indicies in Elasticsearch</li>
-            <li class="fragment">Indicies are divided into Shards</li>
-            <li class="fragment">Shards are replicated across Nodes</li>
-          </ul>
-          <aside class="notes">
-            Lucene also powers Solr, a common search solution for use with Drupal. Sorry to say that it is written in Java, so it's logs are nearly impossible to read. Elastic will create replicate shards on other nodes to increase data integrity. It also is smart enough to rebalance when a node goes down.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Visualization</h2>
-          <p>Types include:</p>
-          <ul>
-            <li class="fragment">Bar, line, pie and dounut charts</li>
-            <li class="fragment">Data tables</li>
-            <li class="fragment">Maps</li>
-          </ul>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>Kibana</h2>
-          <ul>
-            <li>Browser based analytics and search dashboard for Elasticsearch</li>
-          </ul>
-          <aside class="notes">
-            Also has a dark theme.
-          </aside>
-        </section>
-
-        <section>
-          <img src="assets/kibana_dashboard.png" alt="Kibana dashboard"/>
-        </section>
-      </section>
-      <!-- End vertical 2 -->
-      <!-- Start vertical 3 -->
-      <section>
-        <section>
-          <h2>Input</h2>
-          <pre><code style="max-height:525px;">
-input {
-  beats {
-    port => 5044
-    ssl_certificate => "/usr/local/openssl/certs/crt/beat-selfsigned.crt"
-    ssl_key => "/usr/local/openssl/certs/key/beat.key"
-  }
-  file {
-    type => "mysql-slow"
-    path => "/var/log/mysql/mysql-slow.log"
-    codec => multiline {
-      pattern => "^# User@Host:"
-      negate => true
-      what => previous
-    }
-  }
-}
-          </code></pre>
-          <aside class="notes">
-            MySQl slow query log is a little funky, so a common parse pattern is to look from the beginning of the second record back in order to get a complete first record.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Filter - Varnish</h2>
-          <pre><code>
-filter {
-  if [type] == "varnishncsa" {
-    grok {
-      match => { "message" => '%{IPORHOST:clientip} %{USER:ident} %{USER:auth} \[%{HTTPDATE:varnish_timestamp}\] \"%{WORD:verb} %{NOTSPACE:request} HTTP/%{NUMBER:httpversion}\" %{NUMBER:response} %{NOTSPACE:bytes} %{QS:referrer} %{QS:agent} %{QS:varnish_response} %{QS:varnish_backend} %{QS:varnish_f5_destination}' }
-    }
-    mutate {
-      convert => [ "bytes", "integer" ]
-      add_field => { "signal" => "signal" }
-    }
-    if [bytes] == "-" {
-      mutate {
-        replace => { "bytes" => 0 }
-      }
-    }
-    date {
-      locale => "en"
-      match =>["varnish_timestamp","dd/MMM/yyyy:HH:mm:ss Z"]
-      target => ["@timestamp"]
-      add_tag => [ "tmatch" ]
-    }
-  }
-}
-          </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>Grok</h2>
-          <p>From the <a href="https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html">logstash docs</a>:</p>
-          <blockquote>Grok is currently the best way in logstash to parse crappy unstructured log data into something structured and queryable.</blockquote>
-          <aside class="notes">
-            'Grok' was coined by Robert Heinlein, a science fiction writer, in 'Stranger in a Strange Land'.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Grok</h2>
-          <p>Grok pattern include:</p>
-          <ul>
-            <li>Integers, Numbers, Words, Spaces</li>
-            <li>IPv4, IPv6, MAC addresses</li>
-            <li>URIs, Pathes (unix and windows)</li>
-            <li>Whole mess of date/timestamp components and formats</li>
-            <li>Common log formats: Syslog, Apache, Ruby, Java</li>
-          </ul>
-          <aside class="notes">
-            No, I haven't tried feeding logstash it's own tail. That is a bit scary.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Filter - Apache</h2>
-          <pre><code>
-            filter {
-              if [type] == "access" {
-                grok {
-                  match => {
-                    "message" => '%{IPORHOST:first_ip}? %{COMBINEDAPACHELOG}'
-                  }
-                }
-                date {
-                  locale => "en"
-                  match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
-                  timezone => "America/Denver"
-                  target => ["@timestamp"]
-                  add_tag => [ "tmatch" ]
-                }
-                mutate {
-                  rename => [ "clientip", "varnish_ip"]
-                  rename => [ "first_ip", "client_ip"]
-                  convert => [ "bytes", "integer" ]
-                }
-                geoip {
-                  source => "client_ip"
-                }
-              }
-            }
-          </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>Outputs</h2>
-          <pre><code>
-            output {
-              if [type] == 'drupal_syslog' {
-                elasticsearch {
-                  index => "logstash-drupal_syslog-%{+YYYY.MM.dd}"
-                  host => "welastic.colorado.edu"
-                }
-              } else if [mysql] == "mysql" {
-                elasticsearch {
-                  index => "logstash-mysql-%{+YYYY.MM.dd}"
-                  host => "welastic.colorado.edu"
-                }
-              } else if [varnishncsa] == "varnishncsa" {
-                elasticsearch {
-                  index => "logstash-varnishncsa-%{+YYYY.MM.dd}"
-                  host => "welastic.colorado.edu"
-                }
-              } else {
-                elasticsearch {
-                  host => "welastic.colorado.edu"
-                }
-              }
-            }
-          </code></pre>
-          <aside class="notes">
-            These are all outputting to Elasticsearch. But there are a ton of other places to send stuff including: messaging systems, PagerDuty, Nagios, Email. They also have a thing called 'Watcher' that is an alerting plugin for Elasticsearch and will alert based on user defined queries or trends.
-
-            Also looking at [411](https://github.com/etsy/411) from etc to alert based on predefined queries.
-        </section>
-      </section>
-      <!-- End vertical 3 -->
-      <!-- Start vertical 4 -->
-      <section>
-        <section>
-          <h2>Stories from the Support queue</h2>
-          <blockquote style="text-align:left; padding: 10px 20px"><small><p>I could use some post-launch support and help for {URL}</p><p>At times, including right now, the home page displays the words "Information for People" instead of the correct home page. I thought I had made it go away myself just before launch, but clearly not.</p><p>It may have started when a few weeks ago when I renamed the page that is now "Overview" to "Home."</p><p>Thanks for your help.<br />Pat</p></small></blockquote>
-          <aside class="notes">
-          </aside>
-        </section>
-        <section>
-          <p>A few weeks? Lets grab 30 days of logs</p>
-          <img src="assets/kibana_all.png" alt="Kibana dashboard show 163 million events"/>
-          <p><small>163 million events</small></p>
-          <aside class="notes">
-          </aside>
-        </section>
-        <section>
-          <p>Limit search to Production and our Application log</p>
-          <img src="assets/kibana_filter_1.gif" alt="gif of Kibana dashboard filtering from 163 million to 10 million events"/>
-          <p><small>Down to 10 million events</small></p>
-          <aside class="notes">
-            Add filters for Environment and Application log.
-          </aside>
-        </section>
-        <section>
-          <p>Limit further to the specific instance and for 'Interference'</p>
-          <img src="assets/kibana_filter_2.gif" alt="gif of Kibana dashboard filtering from 10 million to 309 events"/>
-          <p><small>Down to 309 events</small></p>
-          <aside class="notes">
-            Add filters for Instance and Interference (explain sig/noise).
-          </aside>
-        </section>
-        <section>
-          <p>Limit further to 'content update' events</p>
-          <img src="assets/kibana_filter_3.gif" alt="gif of Kibana dashboard filtering from 309 to 14 events"/>
-          <p><small>14 events</small></p>
-          <aside class="notes">
-            Now we can look at individual events.
-          </aside>
-        </section>
-        <section>
-          <h2>Answer?</h2>
-          <p class="fragment">User and another person got into an edit war</p>
-        </section>
-        <section>
-          <h2>Is this build stable on Test and ready for Production?</h2>
-          <aside class="notes">
-          </aside>
-        </section>
-        <section>
-          <img src="assets/kibana_deployment.png" alt="Kibana dashboard showing an increase in error rate"/>
-          <aside class="notes">
-          </aside>
-        </section>
-        <section>
-          <img src="assets/kibana_time_zoom.gif" alt="Kibana dashboard selecting a specific time range"/>
-          </aside>
-        </section>
-        <section>
-          <h2>Answer?</h2>
-          <p class="fragment">Nope, increase in 'signal' logging</p>
-        </section>
-      </section>
-      <!-- End vertical 4 -->
-
-      <section>
-        <h2>Future for OSR</h2>
-        <ul>
-          <li>Adding beats, particularly Metrics</li>
-          <li>Getting more logs</li>
-          <li><a href="https://grafana.com/">Grafana</a> - Trending, analytics, alerting.</li>
-        </ul>
-        <aside class="notes">
-        </aside>
-      </section>
-
-      <section>
-        <h2>Questions?</h2>
-        <aside class="notes">
-          Post with comparision to other things: https://dev.to/maklipsa/choosing-centralized-logging-and-monitoring-system
-        </aside>
-      </section>
-
-      <!-- Start vertical 5 -->
-      <section>
-        <section>
-          <h2>Other tools</h2>
-        </section>
-        <section>
-          <ul>
-            <li>Graylog</li>
-            <li>Splunk ($$$)</li>
-            <li>Saas (Loggly, Papertrail)
-          </ul>
-        </section>
-        <section>
-          <h2>Elasticsearch API</h2>
-        </section>
-        <section>
-          <code>curl 'localhost:9200/_cat/health?v'</code>
-          <pre><code class="fragment">
-            epoch      timestamp cluster       status node.total node.data shards pri relo init unassign
-            1394735289 14:28:09  elasticsearch yellow        1         1      5   5    0    0        5
-          </code></pre>
-        </section>
-
-        <section>
-          <code>curl 'localhost:9200/_cat/indices?v'</code>
-          <pre><code class="fragment">
-            health status index    pri rep docs.count docs.deleted store.size pri.store.size
-            green  open   varnish    5   0      11434            0       64mb           32mb
-            green  open   access     5   0       2030            0      5.8mb          5.8mb
-            green  open   mysql      5   0       1054            0      8 8mb           45mb
-            green  open   drupal     5   0      12030            0       1.2G           1.2G
-          </code></pre>
-        </section>
-
-        <section>
-          <h2>Additional Kibana Vizualizations</h2>
-        </section>
-        <section>
-          <img data-src="assets/kibana_default.png" alt="Default screen for Kibana" />
-        </section>
-
-        <section>
-          <img data-src="assets/kibana_viz_co.png" alt="Kibana vizualization creation screen" />
-        </section>
-
-        <section>
-          <img data-src="assets/kibana_viz_map.png" alt="Kibana map vizualization" />
-        </section>
-
-        <section>
-          <img data-src="assets/kibana_dash_plus.png" alt="Kibana Dashboard of 4 indicies" />
-        </section>
-
-        <section>
-          <img data-src="assets/platform_overview.png" alt="Kibana Dashboard of Web Express Overview" />
-        </section>
-
-        <section>
-          <img data-src="assets/platform_overview.png" alt="Kibana Dashboard of Web Express Overview" />
-        </section>
-
-        <section>
-          <h2>Filter - Drupal Syslog</h2>
-          <pre><code>
-filter {
-  if [type] == "drupal_syslog" {
-    grok {
-      match => {
-        "message" =>
-        '%{SYSLOGBASE} %{URI:drupal_base_url}\|%{INT:drupal_unix_timestamp}\|%{DATA:drupal_category}\|%{IP:ip}\|%{URI:drupal_request_url}\|(?:%{URI:drupal_referrer}|)\|%{INT:drupal_uid}\|(?:%{URI:drupal_link}|)\|%{GREEDYDATA:drupal_message}' }
-      }
-      mutate {
-        gsub => [ "drupal_category", "\s", "_"]
-        add_field => { "signal" => "signal" }
-      }
-    }
-}
-              </code></pre>
-              <aside class="notes">
-              </aside>
-            </section>
-
-            <section>
-              <h2>Filter - MySQL Slow Queries</h2>
-              <pre><code>
-filter {
-  if [type] == "mysql" {
-    grok {
-      match => [
-        "message",
-        "^# User@Host: %{USER:user}(?:\[[^\]]+\])?\s+@\s+%{HOST:host}?\s+\[%{IP:ip}?\]"
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+        { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        { src: 'plugin/highlight/highlight.js', async: true, condition: function () { return !!document.querySelector('pre code'); }, callback: function () { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true },
+        { src: 'plugin/notes/notes.js', async: true }
       ]
-    }
-    grok {
-      match => [
-        "message",
-        "^# Query_time: %{NUMBER:duration:float}\s+Lock_time: %{NUMBER:lock_wait:float} Rows_sent: %{NUMBER:results:int} \s*Rows_examined: %{NUMBER:scanned:int}"
-      ]
-    }
-    grok {
-      match => [
-        "message",
-        "^SET timestamp=%{NUMBER:timestamp};"
-      ]
-    }
-    date {
-      match => [ "timestamp", "UNIX" ]
-    }
-  }
-}
-              </code></pre>
-              <aside class="notes">
-              </aside>
-            </section>
-        </section>
-        <!-- End vertical 5 -->
-        </div>
+    });
 
-      </div>
+  </script>
+</body>
 
-      <script src="lib/js/head.min.js"></script>
-      <script src="js/reveal.js"></script>
-
-      <script>
-
-      // Full list of configuration options available at:
-      // https://github.com/hakimel/reveal.js#configuration
-      Reveal.initialize({
-        controls: true,
-        progress: true,
-        history: true,
-        center: true,
-
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
-
-        // Optional reveal.js plugins
-        dependencies: [
-          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-          { src: 'plugin/zoom-js/zoom.js', async: true },
-          { src: 'plugin/notes/notes.js', async: true }
-        ]
-      });
-
-      </script>
-
-    </body>
-    </html>
+</html>
